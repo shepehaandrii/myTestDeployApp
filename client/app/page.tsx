@@ -5,8 +5,8 @@ export default function Home() {
   const [data, setData] = useState<string>();
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/test')
-    // fetch('/api/test')
+    // fetch('http://localhost:3000/api/test')
+    fetch('/api/test')
       .then(response => response.text())
       .then(data => {
         console.log(data);
