@@ -32,8 +32,7 @@ jobs:
 
       - name: Push backend image
         run: |
-          docker push \
-          ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest
+          docker push ${{ secrets.ECR_REPOSITORY }}:latest
 
       # Build frontend
       - name: Build frontend image
@@ -45,5 +44,4 @@ jobs:
 
       - name: Push frontend image
         run: |
-          docker push \
-          ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest
+          docker push ${{ secrets.ECR_REPOSITORY }}:latest
