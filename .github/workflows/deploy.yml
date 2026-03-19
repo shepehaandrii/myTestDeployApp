@@ -24,7 +24,7 @@ jobs:
 
       # Build backend
       - name: Build backend image
-        run: docker build -t ${{ secrets.ECR_REPOSITORY }} -f server/Dockerfile .
+        run: docker build -t ${{ secrets.ECR_REPOSITORY }} -f server/Dockerfile server
 
       - name: Tag backend image
         run: |
@@ -38,7 +38,7 @@ jobs:
 
       # Build frontend
       - name: Build frontend image
-        run: docker build -t ${{ secrets.ECR_REPOSITORY }} -f client/Dockerfile .
+        run: docker build -t ${{ secrets.ECR_REPOSITORY }} -f client/Dockerfile client
 
       - name: Tag frontend image
         run: |
