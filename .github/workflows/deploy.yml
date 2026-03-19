@@ -36,12 +36,12 @@ jobs:
 
       # Build frontend
       - name: Build frontend image
-        run: docker build -t ${{ secrets.ECR_REPOSITORY }} -f client/Dockerfile client
+        run: docker build -t ${{ secrets.ECR_REPOSITORY_FRONT }} -f client/Dockerfile client
 
       - name: Tag frontend image
         run: |
-          docker tag ${{ secrets.ECR_REPOSITORY }}:latest ${{ secrets.ECR_REPOSITORY }}:latest
+          docker tag ${{ secrets.ECR_REPOSITORY_FRONT }}:latest ${{ secrets.ECR_REPOSITORY_FRONT }}:latest
 
       - name: Push frontend image
         run: |
-          docker push ${{ secrets.ECR_REPOSITORY }}:latest
+          docker push ${{ secrets.ECR_REPOSITORY_FRONT }}:latest
