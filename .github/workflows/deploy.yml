@@ -1,25 +1,51 @@
-name: Deploy
+name: Build and Push to ECR
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@master
+      - name: Checkout
+        uses: actions/checkout@v4
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ubuntu
-          key: ${{ secrets.SERVER_SSH_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-          script: |
-            cd /home/ubuntu/myTestDeployApp
-            git pull origin main
-            docker-compose down
-            docker-compose up -d --build
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Build backend
+      - name: Build backend image
+        run: docker build -t ${{ secrets.ECR_REPOSITORY }} -f server/Dockerfile .
+
+      - name: Tag backend image
+        run: |
+          docker tag ${{ secrets.ECR_REPOSITORY }}:latest \
+          ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest
+
+      - name: Push backend image
+        run: |
+          docker push \
+          ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest
+
+      # Build frontend
+      - name: Build frontend image
+        run: docker build -t ${{ secrets.ECR_REPOSITORY }} -f client/Dockerfile .
+
+      - name: Tag frontend image
+        run: |
+          docker tag ${{ secrets.ECR_REPOSITORY }}:latest \
+          ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest
+
+      - name: Push frontend image
+        run: |
+          docker push \
+          ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest
