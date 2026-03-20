@@ -12,7 +12,7 @@ export class AppController {
 
   @Get('test')
   getTest(): string {
-    return 'This is a test endpoint';
+    return 'This is a test endpoint aws';
   }
 
 }

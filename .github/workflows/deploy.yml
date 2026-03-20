@@ -45,3 +45,21 @@ jobs:
       - name: Push frontend image
         run: |
           docker push ${{ secrets.ECR_REPOSITORY_FRONT }}:latest
+
+      # Deploy backend (API)
+      - name: Deploy backend to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: test-mytest-api-td-revision1.json
+          service: test-mytest-api-td-service-1
+          cluster: test-mytest-front
+          wait-for-service-stability: true
+
+      # Deploy frontend
+      - name: Deploy frontend to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: test-mytest-front-td-revision2.json
+          service: test-mytest-front-td-service-5cd7i03c
+          cluster: test-mytest-front
+          wait-for-service-stability: true
